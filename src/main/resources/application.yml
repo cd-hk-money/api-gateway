@@ -2,6 +2,8 @@ server:
   port: 8000
 
 eureka:
+  instance:
+    hostname: localhost
   client:
     fetch-registry: true
     register-with-eureka: true
@@ -13,17 +15,19 @@ spring:
     name: apigateway-service
   cloud:
     gateway:
-      #      default-filters:
-      #        - name: GlobalFilter
-      #          args:
-      #            baseMessage: Spring Cloud Gateway Global Filter
-      #            preLogger: true
-      #            postLogger: true
+      discovery:
+        locator:
+          lower-case-service-id: true
+          enabled: true
       routes:
         - id: web-service
           uri: lb://WEB-SERVICE
           predicates:
-            - Path=/WEB-SERVICE/**
-            - Method=GET
-
+            - Path=/web-service/**
+            - Method=POST,GET
+        - id: stock-service
+          uri: lb://STOCK_SERVICE
+          predicates:
+            - Path=/stock-service/**
+            - Method=POST,GET
             #https://github.com/wkd-woo/msa-spring-ecommerce/blob/main/apigateway-service/src/main/resources/application.yml
