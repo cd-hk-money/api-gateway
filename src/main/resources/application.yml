@@ -25,9 +25,14 @@ spring:
           predicates:
             - Path=/web-service/**
             - Method=POST,GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/web-service/?(?<segment>.*), /$\{segment}
         - id: stock-service
-          uri: lb://STOCK_SERVICE
+          uri: lb://STOCK-SERVICE
           predicates:
             - Path=/stock-service/**
             - Method=POST,GET
-            #https://github.com/wkd-woo/msa-spring-ecommerce/blob/main/apigateway-service/src/main/resources/application.yml
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/stock-service/?(?<segment>.*), /$\{segment}
