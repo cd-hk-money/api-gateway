@@ -20,6 +20,12 @@ spring:
           lower-case-service-id: true
           enabled: true
       routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth-service/**
+            - Method=POST,GET
+
         - id: web-service
           uri: lb://WEB-SERVICE
           predicates:
@@ -27,7 +33,9 @@ spring:
             - Method=POST,GET
           filters:
             - RemoveRequestHeader=Cookie
+            #- AuthorizationHeaderFilter # JWT 검증을 위한 Custom GatewayFilter
             - RewritePath=/web-service/?(?<segment>.*), /$\{segment}
+
         - id: stock-service
           uri: lb://STOCK-SERVICE
           predicates:
